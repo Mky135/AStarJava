@@ -1,18 +1,20 @@
 package aStar.controllers;
 
+import aStar.util.PathFinding;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable
@@ -48,6 +50,13 @@ public class MainController implements Initializable
     @FXML
     GridPane grid;
 
+    public static Paint addColor = Color.GRAY;
+    public static Paint clearColor = Color.WHITE;
+    public static Paint startColor = Color.RED;
+    public static Paint endColor = Color.BLUE;
+
+    public static ArrayList<AnchorPane> panes;
+
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
@@ -55,10 +64,11 @@ public class MainController implements Initializable
         clear = false;
         startLoc = new Point2D(-1,-1);
         endLoc = new Point2D(-1,-1);
+        panes = new ArrayList<>();
 
-        for(int i = 0; i < getColumnCount(); i++)
+        for(int i = 0; i < PathFinding.getColumnCount(grid); i++)
         {
-            for(int j = 0; j < getRowCount(); j++)
+            for(int j = 0; j < PathFinding.getRowCount(grid); j++)
             {
                 addPane(i, j);
             }
@@ -97,6 +107,10 @@ public class MainController implements Initializable
         addButton.setStyle("-fx-background-color: gray;");
     }
 
+    public void start()
+    {
+        new PathFinding(grid);
+    }
 
     public void placeS()
     {
@@ -117,6 +131,7 @@ public class MainController implements Initializable
 
     public void refresh()
     {
+        panes = new ArrayList<>();
         clear = false;
         add = false;
         startPlaced = false;
@@ -127,8 +142,8 @@ public class MainController implements Initializable
         grid.getChildren().clear();
         grid.getColumnConstraints().clear();
         grid.getRowConstraints().clear();
-        int numCols = Integer.valueOf(columnField.getText());
-        int numRows = Integer.valueOf(rowField.getText());
+        int numCols = Integer.parseInt(columnField.getText());
+        int numRows = Integer.parseInt(rowField.getText());
 
         for (int i = 0; i < numCols; i++) {
             ColumnConstraints colConst = new ColumnConstraints();
@@ -141,9 +156,9 @@ public class MainController implements Initializable
             grid.getRowConstraints().add(rowConst);
         }
 
-        for(int i = 0; i < getColumnCount(); i++)
+        for(int i = 0; i < PathFinding.getColumnCount(grid); i++)
         {
-            for(int j = 0; j < getRowCount(); j++)
+            for(int j = 0; j < PathFinding.getRowCount(grid); j++)
             {
                 addPane(i, j);
             }
@@ -155,40 +170,50 @@ public class MainController implements Initializable
     private void addPane(int colIndex, int rowIndex) {
         AnchorPane pane = new AnchorPane();
         pane.getStyleClass().add("cell");
+        pane.setBackground(getBackground(clearColor));
         pane.setOnMouseClicked(e -> {
             if(add)
             {
                 checkOverLap(colIndex, rowIndex, pane);
-                pane.setStyle("-fx-background-color: grey;");
+                pane.setBackground(getBackground(addColor));
             }
             if(clear)
             {
                 checkOverLap(colIndex, rowIndex, pane);
-                pane.setStyle("-fx-background-color: white;");
+                pane.setBackground(getBackground(clearColor));
             }
             if(startPlaced)
             {
-                pane.setStyle("-fx-background-color: blue");
+                pane.setBackground(getBackground(startColor));
                 Label s = new Label("S");
-                checkOverLap(colIndex, rowIndex, pane);
+                s.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
+                checkOverLap(rowIndex, colIndex, pane);
                 pane.getChildren().add(s);
                 centerLabel(s, pane);
-                startLoc = new Point2D(colIndex, rowIndex);
+                startLoc = new Point2D(rowIndex, colIndex);
                 startPlaced = false;
             }
             if(endPlaced)
             {
-                checkOverLap(colIndex, rowIndex, pane);
-                pane.setStyle("-fx-background-color: red;");
+                checkOverLap(rowIndex, colIndex, pane);
+                pane.setBackground(getBackground(endColor));
                 Label end = new Label("E");
+                end.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
                 pane.getChildren().add(end);
                 centerLabel(end, pane);
-                endLoc = new Point2D(colIndex, rowIndex);
+                endLoc = new Point2D(rowIndex, colIndex);
                 endPlaced = false;
             }
         });
+        panes.add(pane);
         grid.add(pane, colIndex, rowIndex);
     }
+
+    private Background getBackground(Paint paint)
+    {
+        return new Background(new BackgroundFill(paint, CornerRadii.EMPTY, Insets.EMPTY));
+    }
+
 
     private void grayBothButton()
     {
@@ -229,35 +254,5 @@ public class MainController implements Initializable
         label.setLayoutX(pane.getWidth()/2);
         label.setLayoutY(pane.getHeight()/2);
     }
-    private int getRowCount() {
-        int numRows = grid.getRowConstraints().size();
-        for (int i = 0; i < grid.getChildren().size(); i++) {
-            Node child = grid.getChildren().get(i);
-            if (child.isManaged()) {
-                Integer rowIndex = GridPane.getRowIndex(child);
-                if(rowIndex != null){
-                    numRows = Math.max(numRows,rowIndex+1);
-                }
-            }
-        }
-        return numRows;
-    }
 
-    private int getColumnCount()
-    {
-        int numColumns = grid.getColumnConstraints().size();
-        for(int i = 0; i < grid.getChildren().size(); i++)
-        {
-            Node child = grid.getChildren().get(i);
-            if(child.isManaged())
-            {
-                Integer columnIndex = GridPane.getColumnIndex(child);
-                if(columnIndex != null)
-                {
-                    numColumns = Math.max(numColumns, columnIndex+1);
-                }
-            }
-        }
-        return numColumns;
-    }
 }
