@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aStar.controllers.MainController" stylesheets="@../css/main.css">
+   <children>
+      <GridPane styleClass="grid" fx:id="grid" gridLinesVisible="true" layoutY="100.0" prefHeight="600.0" prefWidth="600.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+      </GridPane>
+      <Button fx:id="refreshButton" layoutX="505.0" layoutY="27.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Refresh" onAction="#refresh"/>
+      <Button fx:id="addButton" layoutX="30.0" layoutY="27.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Add" onAction="#add"/>
+      <Button fx:id="clearButton" layoutX="135.0" layoutY="27.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Clear" onAction="#clear"/>
+      <TextField fx:id="columnField" layoutX="300.0" layoutY="60.0" prefHeight="30.0" prefWidth="150.0" promptText="Column Size" />
+      <TextField fx:id="rowField" layoutX="300.0" layoutY="20.0" prefHeight="30.0" prefWidth="150.0" promptText="Row Size" />
+      <Button fx:id="startButton" layoutX="228.0" layoutY="22.0" mnemonicParsing="false" text="S" onAction="#placeS"/>
+      <Button fx:id="endButton" layoutX="228.0" layoutY="52.0" mnemonicParsing="false" text="E" onAction="#placeE"/>
+   </children>
+</AnchorPane>
