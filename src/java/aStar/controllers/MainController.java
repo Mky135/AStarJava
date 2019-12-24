@@ -66,13 +66,7 @@ public class MainController implements Initializable
         endLoc = new Point2D(-1,-1);
         panes = new ArrayList<>();
 
-        for(int i = 0; i < PathFinding.getColumnCount(grid); i++)
-        {
-            for(int j = 0; j < PathFinding.getRowCount(grid); j++)
-            {
-                addPane(i, j);
-            }
-        }
+        addPanes();
     }
 
     public void add()
@@ -156,13 +150,7 @@ public class MainController implements Initializable
             grid.getRowConstraints().add(rowConst);
         }
 
-        for(int i = 0; i < PathFinding.getColumnCount(grid); i++)
-        {
-            for(int j = 0; j < PathFinding.getRowCount(grid); j++)
-            {
-                addPane(i, j);
-            }
-        }
+        addPanes();
 
         grid.setGridLinesVisible(true);
     }
@@ -226,6 +214,18 @@ public class MainController implements Initializable
         overLapWithStart(colIndex, rowIndex, pane);
         overLapWithEnd(colIndex, rowIndex, pane);
     }
+
+    private void addPanes()
+    {
+        for(int i = 0; i < PathFinding.getColumnCount(grid); i++)
+        {
+            for(int j = 0; j < PathFinding.getRowCount(grid); j++)
+            {
+                addPane(i, j);
+            }
+        }
+    }
+
 
     private void overLapWithStart(int colIndex, int rowIndex, AnchorPane pane)
     {
