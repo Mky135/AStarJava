@@ -1,11 +1,11 @@
 package aStar.controllers;
 
+import aStar.util.Cell;
 import aStar.util.PathFinding;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -51,11 +51,11 @@ public class MainController implements Initializable
     GridPane grid;
 
     public static Paint addColor = Color.GRAY;
-    public static Paint clearColor = Color.WHITE;
+    private static Paint clearColor = Color.WHITE;
     public static Paint startColor = Color.RED;
     public static Paint endColor = Color.BLUE;
 
-    public static ArrayList<AnchorPane> panes;
+    private static ArrayList<Cell> cells;
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
@@ -64,7 +64,7 @@ public class MainController implements Initializable
         clear = false;
         startLoc = new Point2D(-1,-1);
         endLoc = new Point2D(-1,-1);
-        panes = new ArrayList<>();
+        cells = new ArrayList<>();
 
         addPanes();
     }
@@ -103,7 +103,8 @@ public class MainController implements Initializable
 
     public void start()
     {
-        new PathFinding(grid);
+        PathFinding pathFinding = new PathFinding(grid, cells);
+        Platform.runLater(pathFinding::aStarPathFinding);
     }
 
     public void placeS()
@@ -125,7 +126,7 @@ public class MainController implements Initializable
 
     public void refresh()
     {
-        panes = new ArrayList<>();
+        cells = new ArrayList<>();
         clear = false;
         add = false;
         startPlaced = false;
@@ -136,8 +137,8 @@ public class MainController implements Initializable
         grid.getChildren().clear();
         grid.getColumnConstraints().clear();
         grid.getRowConstraints().clear();
-        int numCols = Integer.parseInt(columnField.getText());
-        int numRows = Integer.parseInt(rowField.getText());
+        int numCols = Integer.parseInt(columnField.getText().equals("") ? "3" : columnField.getText());
+        int numRows = Integer.parseInt(rowField.getText().equals("") ? "3" : rowField.getText());
 
         for (int i = 0; i < numCols; i++) {
             ColumnConstraints colConst = new ColumnConstraints();
@@ -156,50 +157,45 @@ public class MainController implements Initializable
     }
 
     private void addPane(int colIndex, int rowIndex) {
-        AnchorPane pane = new AnchorPane();
-        pane.getStyleClass().add("cell");
-        pane.setBackground(getBackground(clearColor));
-        pane.setOnMouseClicked(e -> {
+        Cell cell = new Cell(clearColor, new Point2D(colIndex, rowIndex));
+        cell.getStyleClass().add("cell");
+        cell.setPaint(clearColor);
+        cell.setOnMouseClicked(e -> {
             if(add)
             {
-                checkOverLap(colIndex, rowIndex, pane);
-                pane.setBackground(getBackground(addColor));
+                checkOverLap(colIndex, rowIndex, cell);
+                cell.setPaint(addColor);
             }
             if(clear)
             {
-                checkOverLap(colIndex, rowIndex, pane);
-                pane.setBackground(getBackground(clearColor));
+                checkOverLap(colIndex, rowIndex, cell);
+                cell.setPaint(clearColor);
             }
             if(startPlaced)
             {
-                pane.setBackground(getBackground(startColor));
+                cell.setPaint(startColor);
                 Label s = new Label("S");
                 s.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
-                checkOverLap(rowIndex, colIndex, pane);
-                pane.getChildren().add(s);
-                centerLabel(s, pane);
+                checkOverLap(rowIndex, colIndex, cell);
+                cell.getChildren().add(s);
+                centerLabel(s, cell);
                 startLoc = new Point2D(rowIndex, colIndex);
                 startPlaced = false;
             }
             if(endPlaced)
             {
-                checkOverLap(rowIndex, colIndex, pane);
-                pane.setBackground(getBackground(endColor));
+                checkOverLap(rowIndex, colIndex, cell);
+                cell.setPaint(endColor);
                 Label end = new Label("E");
                 end.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
-                pane.getChildren().add(end);
-                centerLabel(end, pane);
+                cell.getChildren().add(end);
+                centerLabel(end, cell);
                 endLoc = new Point2D(rowIndex, colIndex);
                 endPlaced = false;
             }
         });
-        panes.add(pane);
-        grid.add(pane, colIndex, rowIndex);
-    }
-
-    private Background getBackground(Paint paint)
-    {
-        return new Background(new BackgroundFill(paint, CornerRadii.EMPTY, Insets.EMPTY));
+        cells.add(cell);
+        grid.add(cell, colIndex, rowIndex);
     }
 
 
@@ -209,10 +205,10 @@ public class MainController implements Initializable
         clearButton.setStyle("-fx-background-color: gray;");
     }
 
-    private void checkOverLap(int colIndex, int rowIndex, AnchorPane pane)
+    private void checkOverLap(int colIndex, int rowIndex, Cell cell)
     {
-        overLapWithStart(colIndex, rowIndex, pane);
-        overLapWithEnd(colIndex, rowIndex, pane);
+        overLapWithStart(colIndex, rowIndex, cell);
+        overLapWithEnd(colIndex, rowIndex, cell);
     }
 
     private void addPanes()
@@ -227,25 +223,25 @@ public class MainController implements Initializable
     }
 
 
-    private void overLapWithStart(int colIndex, int rowIndex, AnchorPane pane)
+    private void overLapWithStart(int colIndex, int rowIndex, Cell cell)
     {
         if(startLoc.getX() == colIndex && startLoc.getY() == rowIndex)
         {
             startLoc = new Point2D(-1, -1);
             startButton.setDisable(false);
             startPlaced = false;
-            pane.getChildren().clear();
+            cell.getChildren().clear();
         }
     }
 
-    private void overLapWithEnd(int colIndex, int rowIndex, AnchorPane pane)
+    private void overLapWithEnd(int colIndex, int rowIndex, Cell cell)
     {
         if(endLoc.getX() == colIndex && endLoc.getY() == rowIndex)
         {
             endLoc = new Point2D(-1, -1);
             endPlaced = false;
             endButton.setDisable(false);
-            pane.getChildren().clear();
+            cell.getChildren().clear();
         }
     }
 

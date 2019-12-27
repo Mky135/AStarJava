@@ -1,18 +1,24 @@
 package aStar.util;
 
 import aStar.controllers.MainController;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Paint;
 
-public class Cell
+public class Cell extends AnchorPane
 {
     private boolean traversal;
     private boolean start;
     private boolean end;
     private Point2D position;
-    private double fCost;
-    private Cell parent;
+    double fCost;
+    private double gCost;
+    private Cell parentCell;
+    private Paint paint;
 
     public Cell(Paint paint, Point2D position)
     {
@@ -20,7 +26,14 @@ public class Cell
         start = false;
         end = false;
         fCost = 0;
+        gCost = 0;
+        this.paint = paint;
+        checkPaint();
+        this.position = position;
+    }
 
+    public void checkPaint()
+    {
         if(paint == MainController.addColor)
         {
             traversal = false;
@@ -28,8 +41,9 @@ public class Cell
         else if (paint == MainController.startColor)
         {
             start = true;
+            gCost = 0;
             fCost = Integer.MAX_VALUE;
-            traversal = true;
+            traversal = false;
         }
         else if(paint == MainController.endColor)
         {
@@ -39,18 +53,22 @@ public class Cell
         else{
             traversal = true;
         }
-
-        this.position = position;
     }
 
-    void setParent(Cell parent)
+    public void setPaint(Paint paint)
     {
-        this.parent = parent;
+        this.paint = paint;
+        setBackground(getBackground(paint));
     }
 
-    Cell getParent()
+    void setParentCell(Cell parentCell)
     {
-        return parent;
+        this.parentCell = parentCell;
+    }
+
+    Cell getParentCell()
+    {
+        return parentCell;
     }
 
     boolean isTraversal() {
@@ -65,14 +83,30 @@ public class Cell
         return end;
     }
 
-    Point2D getPosition() {
+    public Point2D getPosition() {
         return position;
+    }
+
+    private Background getBackground(Paint paint)
+    {
+        return new Background(new BackgroundFill(paint, CornerRadii.EMPTY, Insets.EMPTY));
     }
 
     void setFCost(Cell start, Cell end)
     {
         System.out.println("G: " + getGCost(start) + " H: " + getHCost(end));
-        fCost = getGCost(start) + getHCost(end);
+//        fCost = getGCost(start) + getHCost(end);
+    }
+
+    void setfCost(Cell end)
+    {
+        System.out.println("G: " + gCost + " H: " + getHCost(end));
+        fCost = gCost + getHCost(end);
+    }
+
+    void setgCost(double g)
+    {
+        gCost = g;
     }
 
     double getFCost()
@@ -80,18 +114,27 @@ public class Cell
         return fCost;
     }
 
+    public double getgCost()
+    {
+        return gCost;
+    }
+
     private double getGCost(Cell start)
     {
         System.out.println("Current pos: " + position);
         System.out.println("Start pos: " + start.getPosition());
-        return Math.sqrt(((position.getX() - start.getPosition().getX())*2) + ((position.getY()-start.getPosition().getY())*2));
+        return Math.max(Math.abs(position.getX() - start.getPosition().getX()), Math.abs(position.getY() - start.getPosition().getY()));
     }
 
     private double getHCost(Cell end)
     {
+
         System.out.println("Current pos: " + position);
         System.out.println("End Pos: " + end.getPosition());
-        return Math.max(Math.abs(position.getX() - end.getPosition().getX()), Math.abs(position.getY() - end.getPosition().getY()));
+        return Math.sqrt ((position.getY()-end.position.getY())*(position.getY()-end.position.getY())
+                              + (position.getX()-end.position.getX())*(position.getX()-end.position.getX()));
+//        return Math.sqrt((2 * (position.getX() - end.getPosition().getX())) + (2*(position.getY() - end.getPosition().getY())));
+//        return Math.max(Math.abs(position.getX() - end.getPosition().getX()), Math.abs(position.getY() - end.getPosition().getY()));
     }
 
     @Override
