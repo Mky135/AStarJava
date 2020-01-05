@@ -34,18 +34,18 @@ public class PathFinding
             {
                 end = cell;
             }
-            cell.getChildren().add(new Label(cell.toString()));
+//            cell.getChildren().add(new Label(cell.toString()));
         }
 
-        for(Cell cell : cells)
-        {
-            if(!cell.isStart() && !cell.isEnd())
-            {
-                Label label = new Label("F: " + cell.getFCost());
-                label.setLayoutY(30);
-                cell.getChildren().add(label);
-            }
-        }
+//        for(Cell cell : cells)
+//        {
+//            if(!cell.isStart() && !cell.isEnd())
+//            {
+//                Label label = new Label("F: " + cell.getFCost());
+//                label.setLayoutY(30);
+//                cell.getChildren().add(label);
+//            }
+//        }
     }
 
     public static int getRowCount(GridPane grid)
@@ -91,7 +91,7 @@ public class PathFinding
         ArrayList<Cell> closed = new ArrayList<>();
         Cell current = start;
         open.add(current);
-        System.out.println("Start Parent: " + start);
+//        System.out.println("Start Parent: " + start);
         while(!endFound)
         {
             Cell lowestCell = new Cell(null, null);

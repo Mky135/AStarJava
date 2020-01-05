@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="700.0" prefWidth="600.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aStar.controllers.MainController">
+<AnchorPane prefHeight="768.0" prefWidth="1366.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aStar.controllers.MainController">
    <children>
-      <GridPane fx:id="grid" gridLinesVisible="true" layoutY="100.0" prefHeight="600.0" prefWidth="600.0" styleClass="grid">
+      <GridPane fx:id="grid" gridLinesVisible="true" layoutY="100.0" prefHeight="668.0" prefWidth="668.0" styleClass="grid">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -23,6 +27,6 @@
       <TextField fx:id="rowField" layoutX="300.0" layoutY="20.0" prefHeight="30.0" prefWidth="150.0" promptText="Row Size" />
       <Button fx:id="startButton" layoutX="228.0" layoutY="22.0" mnemonicParsing="false" onAction="#placeS" text="S" />
       <Button fx:id="endButton" layoutX="228.0" layoutY="52.0" mnemonicParsing="false" onAction="#placeE" text="E" />
-      <Button layoutX="455.0" layoutY="40.0" mnemonicParsing="false" text="Start" onAction="#start"/>
+      <Button layoutX="455.0" layoutY="40.0" mnemonicParsing="false" onAction="#start" text="Start" />
    </children>
 </AnchorPane>

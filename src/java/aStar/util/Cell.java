@@ -94,13 +94,13 @@ public class Cell extends AnchorPane
 
     void setFCost(Cell start, Cell end)
     {
-        System.out.println("G: " + getGCost(start) + " H: " + getHCost(end));
+//        System.out.println("G: " + getGCost(start) + " H: " + getHCost(end));
 //        fCost = getGCost(start) + getHCost(end);
     }
 
     void setfCost(Cell end)
     {
-        System.out.println("G: " + gCost + " H: " + getHCost(end));
+//        System.out.println("G: " + gCost + " H: " + getHCost(end));
         fCost = gCost + getHCost(end);
     }
 
@@ -129,8 +129,8 @@ public class Cell extends AnchorPane
     private double getHCost(Cell end)
     {
 
-        System.out.println("Current pos: " + position);
-        System.out.println("End Pos: " + end.getPosition());
+//        System.out.println("Current pos: " + position);
+//        System.out.println("End Pos: " + end.getPosition());
         return Math.sqrt ((position.getY()-end.position.getY())*(position.getY()-end.position.getY())
                               + (position.getX()-end.position.getX())*(position.getX()-end.position.getX()));
 //        return Math.sqrt((2 * (position.getX() - end.getPosition().getX())) + (2*(position.getY() - end.getPosition().getY())));

@@ -177,7 +177,7 @@ public class MainController implements Initializable
                 Label s = new Label("S");
                 s.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
                 checkOverLap(rowIndex, colIndex, cell);
-                cell.getChildren().add(s);
+//                cell.getChildren().add(s);
                 centerLabel(s, cell);
                 startLoc = new Point2D(rowIndex, colIndex);
                 startPlaced = false;
@@ -188,7 +188,7 @@ public class MainController implements Initializable
                 cell.setPaint(endColor);
                 Label end = new Label("E");
                 end.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
-                cell.getChildren().add(end);
+//                cell.getChildren().add(end);
                 centerLabel(end, cell);
                 endLoc = new Point2D(rowIndex, colIndex);
                 endPlaced = false;
